@@ -1,0 +1,1 @@
+void GaussElimination(float*,float*,int,int,int);

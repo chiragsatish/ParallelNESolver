@@ -1,0 +1,204 @@
+\documentclass{article}
+% Change "article" to "report" to get rid of page number on title page
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{setspace}
+\usepackage{Tabbing}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{extramarks}
+\usepackage{url}
+\usepackage{chngpage}
+\usepackage{longtable}
+\usepackage{soul,color}
+\usepackage{graphicx,float,wrapfig}
+\usepackage{enumitem}
+\usepackage{morefloats}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{natbib}
+\usepackage[toc,page]{appendix}
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1} \times}}
+
+% In case you need to adjust margins:
+\topmargin=-0.45in      % used for overleaf
+%\topmargin=0.25in      % used for mac
+\evensidemargin=0in     %
+\oddsidemargin=0in      %
+\textwidth=6.5in        %
+%\textheight=9.75in       % used for mac
+\textheight=9.25in       % used for overleaf
+\headsep=0.25in         %
+
+% Homework Specific Information
+\newcommand{\hmwkTitle}{Progress Report 2}
+\newcommand{\hmwkDueDate}{Monday,\ November\  5,\ 2018}
+\newcommand{\hmwkClass}{Final Project}
+\newcommand{\hmwkClassTime}{CSE 597}
+\newcommand{\hmwkAuthorName}{Chirag\ H.\ Satish}
+\newcommand{\hmwkNames}{chs5187}
+
+% Setup the header and footer
+\pagestyle{fancy}
+\lhead{\hmwkNames}
+\rhead{\hmwkClassTime: \hmwkTitle} 
+\cfoot{Page\ \thepage\ of\ \pageref{LastPage}}
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Make title
+
+\title{\vspace{2in}\textmd{\textbf{\hmwkClass:\ \hmwkTitle}} \\
+\vspace{0.1in}\large{ \hmwkClassTime}\vspace{3in}}
+
+\author{\textbf{\hmwkAuthorName} \\ \vspace{0.1in}
+\hmwkDueDate }
+\date{} % to take away today's date
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{spacing}{1.1}
+\maketitle
+
+\newpage
+\section*{Abstract}
+
+Linear regression problems are frequently encountered in the fields of machine learning and statistics. It involves finding a line which best fits the given data points. Normal equations enable us to find the solution to these problems in a fast and scaling-free method. Various ML packages have methods to determine the regression model for the given data. In this project, we have solved the normal equation using Gaussian elimination as a direct solver and Gauss Siedel method as the iterative solver. Our example data set \cite{UCI} consists of housing data, where we intend to predict the house prices based on parameters like size, number of bedrooms, age of the house, number of floors by fitting the training data with a line, that is used to predict the housing prices, given the other attributes. The main bottle neck in this problem is the matrix multiplication, and the solvers, if the number of features is significantly large (1000+). OpenMP (Open Multi-Processing) is an application programming interface (API) that supports multi-platform shared memory multiprocessing programming in C, C++, and Fortran. OpenMP has been used to parallelize the serial matrix multiplication and linear equation solvers. OpenMP is managed by the nonprofit technology consortium OpenMP Architecture Review Board (or OpenMP ARB), jointly defined by a group of major computer hardware and software vendors, including AMD, IBM, Intel, Cray, HP, Fujitsu, Nvidia, NEC, Red Hat, Texas Instruments, Oracle Corporation, and more. \cite{OMP}
+
+\section{Problem of Interest}
+
+\begin{itemize}
+    Linear regression is a linear approach to modelling the relationship between a scalar response (or dependent variable) and one or more explanatory variables (or independent variables). The simplest form of the regression equation with one dependent and one independent variable is defined by the formula y = c + b*x, where y is the estimated dependent variable score, c is the constant, b is the regression coefficient, and x is the score on the independent variable. Our example data set consists of housing data, where we intend to predict the house prices based on parameters like size, number of bedrooms, age of the house, number of floors, etc. \newline \newline
+    \subsection{General Overview}
+    \item Linear regression consists of finding the best-fitting straight line through the points. The best-fitting line is called a regression line. We assume that our data set has n features and m training examples. x\textsubscript{i}\textsuperscript{j} represents the j\textsuperscript{th} feature in the i\textsuperscript{th} training example. The hypothesis for linear regression is defined as $$h_\theta(x)=\theta^Tx$$ where x is an n dimensional vector of features and $\theta$ is the parameter vector that needs to be determined such that the best fit line so obtained minimizes the mean squared error. 
+    \subsection{Scientific Merit}
+    \item Regression is frequently used to model continuous data and predict future values based on historical trends. We may use regression to predict stock prices, housing prices and fuel prices, to name a few. All machine learning tools provide functions to perform linear regression. A faster regression solver is always preferable. 
+    \subsection{Relevant Fields}
+    \item Machine learning, data mining, statistics.
+    \subsection{Alternate Solution}
+    \item Gradient descent \cite{GDRef} is the most popular solution to regression problems. However, gradient descent can be slow and requires pre-processing of training data such as scaling, which can be computationally expensive. 
+    \subsection{Normal Equation}
+    \item This approach is used to determine the parameter vector $\theta$ using the X and Y matrices, described in the next section. The formula is mentioned below
+    $$\theta=(X^TX)^{-1}(X^TY)$$
+\end{itemize}
+
+
+\section{Parallelization}
+
+\begin{itemize}
+    \subsection{OpenMP}
+    \item OpenMP (Open Multi-Processing) is an application programming interface (API) that supports multi-platform shared memory multiprocessing programming in C, C++, and Fortran, on most platforms, instruction set architectures and operating systems, including Solaris, AIX, HP-UX, Linux, macOS, and Windows. It consists of a set of compiler directives, library routines, and environment variables that influence run-time behavior.
+    \item The core elements of OpenMP are the constructs for thread creation, workload distribution (work sharing), data-environment management, thread synchronization, user-level runtime routines and environment variables. In C/C++, OpenMP uses \#pragmas.
+    \subsection{Why OpenMP?}
+    \item OpenMP is a type of shared memory parallelization. Solving linear regression problems involves reading from data sets which are usually CSV files and solving the linear equation. Having a shared memory where the processors can read from is more efficient than maintaining multiple copies of the data set and the matrices, which can be large in size.
+    \item Furthermore, pre-processing of data is often performed. This may include steps such as converting categorical attributes to discrete numerical values, normalization, etc. A shared memory environment is more convenient and performs better, as we do not have to worry about the consistency of the data sets.
+    \item Linear Regression is effective on data sets that are not extremely big (from the analysis of available data sets on the UCI website \cite{UCI} which are frequently used). We can obtain good performance by using a single node of processors.
+    \item MPI, Mapreduce and PGAS are effectively ruled out because of the reasons listed above. OpenMP was chosen over Pthreads as it was easier to manage the coding with OpenMP and the fine-grained control provided by Pthreads (not available in OpenMP) was not required.
+    \subsection{Parallelization specific to the regression problem}
+    \item The main tasks are: matrix multiplication and the solvers (Gauss elimination and Gauss Siedel methods). Matrix multiplication and both solvers has been implemented in parallel. Approximately 52\% of the code has been parallelized and 48\% of the code is serial. (Estimated using number of serial and parallel SLOC)
+    \item There is no change in the set-up of the A and B matrices.
+
+\end{itemize}
+
+\section{Profiling}
+
+\subsection{Serial}
+
+\begin{itemize}
+\item The serial code has been profiled and the result is as follows: \newline \newline
+\includegraphics[width=\textwidth]{Serialprofile.png}
+\begin{itemize}
+\item The two calls to the matrix multiplication function take the most time. The other operations such as transpose is fast (due to the usage of SSE) and the solvers are fast because the input matrices are 5X5 in dimension.
+\item This corresponds to the behavior expected of the serial code.
+\end{itemize}
+\item Since two calls are being made to the multiplication function, we can improve performance by making just one call that performs both the required multiplications. Furthermore, we can integrate both multiplications into the same set of loops (refer to serialmultiply.cpp). \newline The updated profile is shown below: \newline \newline
+\includegraphics[width=\textwidth]{Serialprof2.png}
+\item We can achieve a significant improvement by implementing Strassen's algorithm which performs matrix multiplication in O($n^2$) compared to the typicalO($n^3$) runtime. However, by calling the function only once and running the three loops once, we have managed to reduce the runtime of the main function.
+\end{itemize}
+
+\subsection{Parallel}
+\begin{itemize}
+\item The parallel code has been profiled and the result is as follows: \newline \newline
+\includegraphics[width=\textwidth]{paraprof2.png}
+\includegraphics[width=\textwidth]{para1.png}
+\includegraphics[width=\textwidth]{para2.png}
+\includegraphics[width=\textwidth]{para3.png}
+\begin{itemize}
+\item Both the main() function and matrix multiplication functions take more time compared to the rest of the code. The profile is not showing all the function calls as TAU does not work for SSE. However, since the dimension of the matrix input to the solvers remains 5X5, the solvers cannot be the bottleneck. Again, this behavior is consistent with expectations.
+\item The parallel version takes less time than the serial code as expected. We can improve the run-time by integrating the changes to matrix multiplication we made above.
+\item From PR1, it was estimated that the production problem would take $m(production)/m(testing)$ times the size of the sample problem where m is the number of records in the data set. Sample problem space was 2828KB, so we can extrapolate production problem space to be 2828*(50,000/10,000) = 14,240KB which is close to the actual space of 14,216KB. As far as run-time is concerned, we estimated an increase by a factor of 2.25. However, the run-time of the solvers is not affected and the time increased by ~1.5 times. 
+\end{itemize}
+\item We can reduce the run-time of the main() and multiplication functions by combining the two matrix multiplication operations in one function call. As far as parallelization is concerned, there is no room for improvement that I can think of.
+\item The updated profile is shown below: \newline \newline
+\includegraphics[width=\textwidth]{paralimprov.png} 
+The runtime of the main function has come down, and the parallel performance remains the same. (not shown again)
+\end{itemize}
+
+\section{Scaling}
+
+\subsection{Strong Scaling}
+    \begin{itemize}
+    \includegraphics[width=150mm,scale=0.75]{time.png}
+    \includegraphics[width=150mm,scale=0.75]{strongScaling_Effic.png}
+    \includegraphics[width=150mm,scale=0.75]{strongScaling_Traditional.png}
+    \newline
+    \begin{itemize}
+    \item We have chosen 1 processor as the starting point as it is possible to solve the problem on a single processor for this data set. Moreover, most of the data sets have fewer than 100 features, which corresponds to the number of variables in our Ax=B equation. Hence using one processor is a good starting point. 
+    \end{itemize}
+    \end{itemize}
+\subsubsection{Overview of results}
+    \begin{itemize}
+        \item N=5 would give the output in the fastest time.
+        \item For efficient resource usage, N=2 provides the best balance between efficiency and program run-time.
+        \item We are seeing an outlier speed-up plot for this data set as there are 50,000 training examples and 5 attributes. Therefore the parallelization is not producing significantly better results than the serial code because the matrix is thin and long. When we calculate $X^T$X and $X^T$Y, the innermost loop, which cannot be run in parallel happens to have the most iterations. However, looking at the data sets for regression problems where there are problems with large training examples and attributes, we can expect significantly better parallel performance (than the serial code). Hence, N=4 will provide the best run-time along with acceptable resource usage.
+    \end{itemize}
+    \subsubsection{Comparison with Amdahl's Law}
+    \begin{itemize}
+        \item The plot below compares the results with Amdahl's law, using the estimation (P=0.52). \newline
+        \includegraphics[width=150mm,scale=0.75]{amd.png}
+        \newline
+        We are not close to ideal due to the reasons outlined previously.
+    \end{itemize}
+
+\section{Discussion and Conclusions}
+
+\begin{enumerate}
+    \item OpenMP has been used to parallelize the matrix multiplication and both the solvers. For the housing dataset, the results of the parallel implementation are better than the serial implementation, but we can expect the parallel solver to perform much better across data sets which are more complex and have more features.
+    \item The dataset is at the heart of the linear regression solver. Pre-processing is often performed on the data. All this makes a shared memory parallelization scheme the right choice. The detailed analysis has been done in section 2.2. 
+    \item The extent of performance gain is dependant on the shape of the input matrix i.e number of features and number of training examples. A matrix such as the one used in this demonstration of the regression solver produces less gain in performance as compared to cases with a large number of input features. Therefore, despite the seemingly negligible performance gain here, we can be sure that the solver generalizes over a wide range of data sets. For future implementations, we can run a test on the hardware to determine whether to use the serial or parallel solver, taking into account the number of features of the input data set.  
+\end{enumerate}
+
+\newpage
+\begin{appendices}
+
+\section{Acknowledgements}
+
+I would like to thank Dr. Adam Lavely and Dr. Chris Blanton for formulating the course material and providing general guidance
+
+\section{Code}
+
+\begin{itemize}
+    \item You can get my assignment onto ACI using the command: \newline git clone https://github.com/chiragsatish/ParallelNESolver.git
+    \item main.cpp - Contains the main() function \newline transpose.cpp - Function to calculate matrix transpose \newline parallel\_multiply.cpp - Calculates product of two matrices/matrix and vector \newline parallelGE.cpp - Parallel direct solver code \newline parallelGS.cpp - Parallel iterative solver \newline A.txt - File containing the data set (independant variable values) \newline B.txt - File containing dependant variable values \newline Makefile - Make file \newline serialmultiply.cpp - Modified serial multiplication after profiling \newline parallelprof\_multiply.cpp - Modified parallel multiplication after profiling 
+    \item Compilation Instructions:\newline module load gcc/5.3.1 \newline make \newline ./execute
+    \item Profiling \newline module load tau/2.27 - for serial profiling \newline Dr. Adam's TAU for OMP has been used for parallel profiling.
+    \item The code was run on a single node comp-bc-0282 of Intel(R) Xeon(R)  @ 2.20GHz processors.
+\end{itemize}
+
+
+\end{appendices}
+
+
+\bibliographystyle{acm}
+\bibliography{references}
+
+\end{spacing}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%}}
+
